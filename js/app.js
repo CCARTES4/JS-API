@@ -8,17 +8,19 @@ window.onload = () => {
     formulario.addEventListener('submit', validacion);
 } 
 
-function criptoMonedaPopular() {
+async function criptoMonedaPopular() {
 
     const appID = '67fde0671b17be1ac9f0f86c5b9dd7d9fab1cf81f0b13c2036a5cad982f9fdb2';
     
     const url = `https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD&api_key=${appID}`;
 
-    fetch(url)
-        .then(resultado => resultado.json())
-        .then(respuesta => respuesta.Data)
-        .then(criptomoneda => llenarCriptomoneda(criptomoneda))
-        .catch(error => console.log(error));
+    try {
+        const resultado = await fetch(url);
+        const respuesta = await resultado.json();
+        const criptomoneda = llenarCriptomoneda(respuesta.Data);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 function llenarCriptomoneda(criptomoneda) {
@@ -57,17 +59,20 @@ function validacion(e) {
 }
 
 
-function convertirCrypto(moneda, criptomoneda) {
+async function convertirCrypto(moneda, criptomoneda) {
 
     const appID = '67fde0671b17be1ac9f0f86c5b9dd7d9fab1cf81f0b13c2036a5cad982f9fdb2'
 
     const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}&api_key=${appID}`
 
 
-    fetch(url)
-        .then(resultado => resultado.json())
-        .then(datos => mostrarDatos(datos.DISPLAY[criptomoneda][moneda]))
-        .catch(error => console.log(error));
+    try {
+        const respuesta = await fetch(url);
+        const resultado = await respuesta.json();
+        const datos = mostrarDatos(resultado.DISPLAY[criptomoneda][moneda]);
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
